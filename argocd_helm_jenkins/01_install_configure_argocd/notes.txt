@@ -1,0 +1,35 @@
+
+#lancez le cluster minicube
+sudo minikube start --vm-driver=none --addons=registry --kubernetes-version=1.19.0
+
+
+# install ArgoCD in k8s
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+
+k get po -n argocd
+k get svc -n argocd
+
+#accédez à argoCD
+argocd login localhost:32000
+
+#ajout du cluster minikube à argocd
+argocd cluster add minikube
+
+#variable environnement indique ou se trouver les composants argocd
+export ARGOCD_OPTS='--port-forward-namespace argocd'
+#variable environnement indique url du cluster
+export CLUSTER_IP=https://$(sudo minikube ip):8443
+
+#creation de l'application en cli
+argocd app create roar-deploy-k8s --repo https://github.com/brentlaster/roar-deploy-k8s --path . --dest-server $CLUSTER_IP --dest-namespace roar
+# afficher des informations
+argocd app get roar-deploy-k8s
+export EDITOR=gedit
+argocd app edit roar-deploy-k8s
+k get po -n roar
+k get svc -n roar
+
+
+#repo git : https://github.com/brentlaster/roar-deploy-k8s

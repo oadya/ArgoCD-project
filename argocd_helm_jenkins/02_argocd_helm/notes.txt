@@ -1,0 +1,40 @@
+#https://github.com/brentlaster/roar-k8s-helm/tree/main
+
+
+# creation d'un projet (visible dans paramètre > projets)
+argocd proj create helmproj
+
+#listez les clé
+argocd cert list --cert-type ssh
+
+#lister les cles publiques
+ssh-keyscan 10.0.2.15 
+
+#mettre les clés publique dans argocd pour se connecter au serveur git avec ssh et non https
+ssh-keyscan 10.0.2.15 | argocd cert add-ssh --batch
+
+ls .ssh/
+
+#ajout repo git a argocd (paramètre > repository)
+argocd repo add git@10.0.2.15:/git/repos/roar-k8s-helm.git ssh-private-key .ssh/id rsa
+ls /git/repos/roar-k8s-helm.git/
+
+#ajout du repo dans le projet helmproj
+argocd proj add-source helmproj git@10.0.2.15:/git/repos/roar-k8s-helm.git
+
+#ajout de la destination dans le namespace helm-demo
+argocd proj add-destination helmproj https://10.0.2.15:8443 helm-demo
+
+
+git clone git@10.0.2.15:/git/repos/roar-k8s-helm.git
+cd roar-k8s-helm/
+ls
+vi helm/values.yaml 
+tree
+git diff
+git add .
+git commit -m "fix version number"
+git push origin main
+clear
+k get svc -n helm-demo
+cd

@@ -1,0 +1,22 @@
+GitOps
+------ 
+Garantit la cohérence ce que l'on a sur git et e cluster => reconciliateur
+Qu'est ce qui garantie que les fichiers manifest dans git sont conformes au deploiement en prod
+
+
+ArgoProj
+------
+est  une suite de projets
+
+ArgoCD : gestion du CD, implémentation du gitops, agit sue le repository de déploiement
+ArgoWorkflow: gestion et design des pipelines
+ArgoRollouts : stratefie deploiement bluegreen, canary
+ArgoEvent: lancer des actions suite a des évènements
+
+
+ArgoCD
+------
+Permet de déployer une application dans un cluster k8s 
+Permet de synchroniser une application déployée dans un cluster k8s avec les manifests du repo git 
+Permet de visaliser les différents manifests qui ont été déployé et voir les log
+Visualiser les différentes releases et faire des rollback en ca de probleme

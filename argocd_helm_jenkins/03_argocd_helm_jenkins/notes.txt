@@ -1,0 +1,18 @@
+argocd proj create jenkins-proj -d https://10.0.2.15:8443,* -s git@10.0.2.15:/git/repos/roar-min-deploy
+argocd repo add git@10.0.2.15:/git/repos/roar-min-deploy.git --ssh-private-key-path ~/.ssh/id_rsa
+argocd app create jenkins-stage --project jenkins-proj --repo git@10.0.2.15:/git/repos/roar-min-deploy.git --dest-server https://10.0.2.15:8443 --path overlays/stage --sync-policy auto
+cd roar-min-deploy/overlays/stage/
+kustomize build
+cd
+argocd app create jenkins-prod --project jenkins-proj --repo git@10.0.2.15:/git/repos/roar-min-deploy.git --dest-server https://10.0.2.15:8443 --path overlays/prod --sync-policy auto
+ls roar-min-deploy/overlays/prod/
+cd roar-min-deploy/
+git pull
+cat overlays/prod/db/kustomization.yaml 
+k get namespace
+cd
+cd roar-min
+ls
+vi web/src/main/webapp/agents.html 
+git commit -am 'update agent page'
+git push origin main:main
